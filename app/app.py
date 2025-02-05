@@ -1,6 +1,5 @@
 import os
 import streamlit as st
-os.environ["STREAMLIT_WATCH_FILE"] = "false"
 import torch
 import numpy as np
 import pandas as pd
@@ -9,6 +8,8 @@ import torchvision.transforms.functional as TF
 import CNN
 import gdown
 
+# Disable Streamlit file-watching to prevent conflicts
+os.environ["STREAMLIT_WATCH_FILE"] = "false"
 
 # Get the directory of the currently running script
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -21,11 +22,10 @@ disease_info = pd.read_csv(disease_info_path, encoding='cp1252')
 supplement_info = pd.read_csv(supplement_info_path, encoding='cp1252')
 
 # Define file paths
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 MODEL_DIR = os.path.join(BASE_DIR, "model")
 MODEL_PATH = os.path.join(MODEL_DIR, "plant_disease_model_Entire.pt")
 
-# Google Drive file ID
+# Google Drive file ID & Download URL
 GDRIVE_FILE_ID = "11zdhHWZaN7cOs3HQFcvb_NMzWuMgMb9T"
 DOWNLOAD_URL = f"https://drive.google.com/uc?id={GDRIVE_FILE_ID}"
 
@@ -36,40 +36,56 @@ def download_model():
         os.makedirs(MODEL_DIR)
 
     print("Downloading model file from Google Drive...")
-    gdown.download(DOWNLOAD_URL, MODEL_PATH, quiet=False)
-    print("Download complete.")
+    try:
+        gdown.download(DOWNLOAD_URL, MODEL_PATH, fuzzy=True, quiet=False)
+        print("Download complete.")
+    except Exception as e:
+        st.error(f"Model download failed: {e}")
+        return False
+    return True
 
 
-# Download if the model is missing
+# Ensure the model is available before proceeding
 if not os.path.exists(MODEL_PATH):
-    download_model()
+    if not download_model():
+        st.error("Failed to download the model. Please check your Google Drive permissions.")
+        st.stop()
 
-# Load the model
-model = CNN.CNN(39)
-model.load_state_dict(torch.load(MODEL_PATH, map_location=torch.device('cpu')))
-model.eval()
+# Load the model with exception handling
+try:
+    model = CNN.CNN(39)
+    model.load_state_dict(torch.load(MODEL_PATH, map_location=torch.device('cpu')))
+    model.eval()
+    print("Model loaded successfully!")
+except Exception as e:
+    st.error(f"Error loading model: {e}")
+    st.stop()
 
-print("Model loaded successfully!")
 
-
+# Function for image prediction
 def prediction(image_path):
-    image = Image.open(image_path)
-    image = image.resize((224, 224))
-    input_data = TF.to_tensor(image)
-    input_data = input_data.view((-1, 3, 224, 224))
-    output = model(input_data)
-    output = output.detach().numpy()
-    index = np.argmax(output)
-    return index
+    try:
+        image = Image.open(image_path)
+        image = image.resize((224, 224))
+        input_data = TF.to_tensor(image)
+        input_data = input_data.view((-1, 3, 224, 224))
+        output = model(input_data)
+        output = output.detach().numpy()
+        index = np.argmax(output)
+        return index
+    except Exception as e:
+        st.error(f"Prediction error: {e}")
+        return None
 
 
 # Streamlit UI
-st.title("Plant Disease Detection App")
+st.title("🌱 Plant Disease Detection App")
 
-uploaded_file = st.file_uploader("Upload an image of the plant leaf", type=["jpg", "png", "jpeg"])
+uploaded_file = st.file_uploader("📤 Upload an image of the plant leaf", type=["jpg", "png", "jpeg"])
 
 if uploaded_file is not None:
     st.image(uploaded_file, caption="Uploaded Image", use_container_width=True)
+
     temp_dir = "temp"
     os.makedirs(temp_dir, exist_ok=True)  # Ensure the temp directory exists
 
@@ -78,19 +94,23 @@ if uploaded_file is not None:
         f.write(uploaded_file.getbuffer())
 
     pred = prediction(file_path)
-    title = disease_info['disease_name'][pred]
-    description = disease_info['description'][pred]
-    prevent = disease_info['Possible Steps'][pred]
-    image_url = disease_info['image_url'][pred]
-    supplement_name = supplement_info['supplement name'][pred]
-    supplement_image_url = supplement_info['supplement image'][pred]
-    supplement_buy_link = supplement_info['buy link'][pred]
 
-    st.subheader(f"Prediction: {title}")
-    st.image(image_url, caption=title)
-    st.write(f"**Description:** {description}")
-    st.write(f"**Prevention Steps:** {prevent}")
+    if pred is not None:
+        title = disease_info['disease_name'][pred]
+        description = disease_info['description'][pred]
+        prevent = disease_info['Possible Steps'][pred]
+        image_url = disease_info['image_url'][pred]
+        supplement_name = supplement_info['supplement name'][pred]
+        supplement_image_url = supplement_info['supplement image'][pred]
+        supplement_buy_link = supplement_info['buy link'][pred]
 
-    st.subheader("Recommended Supplement")
-    st.image(supplement_image_url, caption=supplement_name)
-    st.markdown(f"[Buy Here]({supplement_buy_link})")
+        st.subheader(f"🦠 Prediction: {title}")
+        st.image(image_url, caption=title)
+        st.write(f"**📄 Description:** {description}")
+        st.write(f"**🛡 Prevention Steps:** {prevent}")
+
+        st.subheader("💊 Recommended Supplement")
+        st.image(supplement_image_url, caption=supplement_name)
+        st.markdown(f"[🛒 Buy Here]({supplement_buy_link})")
+    else:
+        st.error("Failed to process the uploaded image.")
