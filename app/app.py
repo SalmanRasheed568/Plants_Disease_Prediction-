@@ -7,11 +7,17 @@ from PIL import Image
 import torchvision.transforms.functional as TF
 import CNN
 
-# Load disease and supplement information
-disease_info = pd.read_csv(r'C:\Users\Dubai Computers\PycharmProjects\PythonProject2\app\disease_info.csv',
-                           encoding='cp1252')
-supplement_info = pd.read_csv(r'C:\Users\Dubai Computers\PycharmProjects\PythonProject2\app\supplement_info.csv',
-                              encoding='cp1252')
+
+# Get the directory of the currently running script
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+
+# Load CSV files using relative paths
+disease_info_path = os.path.join(BASE_DIR, 'disease_info.csv')
+supplement_info_path = os.path.join(BASE_DIR, 'supplement_info.csv')
+
+disease_info = pd.read_csv(disease_info_path, encoding='cp1252')
+supplement_info = pd.read_csv(supplement_info_path, encoding='cp1252')
+
 
 # Load the model
 model = CNN.CNN(39)
