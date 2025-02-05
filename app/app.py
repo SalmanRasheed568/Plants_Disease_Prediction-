@@ -29,6 +29,7 @@ MODEL_PATH = os.path.join(MODEL_DIR, "plant_disease_model_Entire.pt")
 GDRIVE_FILE_ID = "11zdhHWZaN7cOs3HQFcvb_NMzWuMgMb9T"
 DOWNLOAD_URL = f"https://drive.google.com/uc?id={GDRIVE_FILE_ID}"
 
+
 # Function to download the model if missing
 def download_model():
     if not os.path.exists(MODEL_DIR):
@@ -42,6 +43,7 @@ def download_model():
         st.error(f"Model download failed: {e}")
         return False
     return True
+
 
 # Ensure the model is available before proceeding
 if not os.path.exists(MODEL_PATH):
@@ -59,6 +61,7 @@ except Exception as e:
     st.error(f"Error loading model: {e}")
     st.stop()
 
+
 # Function for image prediction
 def prediction(image_path):
     try:
@@ -74,20 +77,9 @@ def prediction(image_path):
         st.error(f"Prediction error: {e}")
         return None
 
+
 # Streamlit UI
 st.title("🌱 Plant Disease Detection App")
-
-# Embed HTML content from the files
-def load_html(file_name):
-    with open(file_name, 'r', encoding='utf-8') as f:
-        return f.read()
-
-# Load and display HTML files
-st.markdown(load_html(os.path.join(BASE_DIR, 'templates/contact us.html')), unsafe_allow_html=True)
-st.markdown(load_html(os.path.join(BASE_DIR, 'templates/home.html')), unsafe_allow_html=True)
-st.markdown(load_html(os.path.join(BASE_DIR, 'templates/index.html')), unsafe_allow_html=True)
-st.markdown(load_html(os.path.join(BASE_DIR, 'templates/market.html')), unsafe_allow_html=True)
-st.markdown(load_html(os.path.join(BASE_DIR, 'templates/submit.html')), unsafe_allow_html=True)
 
 uploaded_file = st.file_uploader("📤 Upload an image of the plant leaf", type=["jpg", "png", "jpeg"])
 
