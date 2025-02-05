@@ -18,13 +18,29 @@ supplement_info_path = os.path.join(BASE_DIR, 'supplement_info.csv')
 disease_info = pd.read_csv(disease_info_path, encoding='cp1252')
 supplement_info = pd.read_csv(supplement_info_path, encoding='cp1252')
 
+# Define file paths
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+MODEL_DIR = os.path.join(BASE_DIR, "model")
+MODEL_PATH = os.path.join(MODEL_DIR, "plant_disease_model_Entire.pt")
 
-# Construct the correct path to the model file
-MODEL_PATH = os.path.join(BASE_DIR, 'model', 'plant_disease_model_Entire.pt')
+# Google Drive file ID
+GDRIVE_FILE_ID = "11zdhHWZaN7cOs3HQFcvb_NMzWuMgMb9T"
+DOWNLOAD_URL = f"https://drive.google.com/uc?id={GDRIVE_FILE_ID}"
 
-# Ensure the model file exists before loading
+
+# Function to download the model if missing
+def download_model():
+    if not os.path.exists(MODEL_DIR):
+        os.makedirs(MODEL_DIR)
+
+    print("Downloading model file from Google Drive...")
+    gdown.download(DOWNLOAD_URL, MODEL_PATH, quiet=False)
+    print("Download complete.")
+
+
+# Download if the model is missing
 if not os.path.exists(MODEL_PATH):
-    raise FileNotFoundError(f"Model file not found: {MODEL_PATH}. Make sure it's uploaded using Git LFS.")
+    download_model()
 
 # Load the model
 model = CNN.CNN(39)
