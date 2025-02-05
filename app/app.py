@@ -19,11 +19,19 @@ disease_info = pd.read_csv(disease_info_path, encoding='cp1252')
 supplement_info = pd.read_csv(supplement_info_path, encoding='cp1252')
 
 
+# Construct the correct path to the model file
+MODEL_PATH = os.path.join(BASE_DIR, 'model', 'plant_disease_model_Entire.pt')
+
+# Ensure the model file exists before loading
+if not os.path.exists(MODEL_PATH):
+    raise FileNotFoundError(f"Model file not found: {MODEL_PATH}. Make sure it's uploaded using Git LFS.")
+
 # Load the model
 model = CNN.CNN(39)
-model.load_state_dict(
-    torch.load(r'C:\Users\Dubai Computers\New folder\model\plant_disease_model_Entire.pt'))
+model.load_state_dict(torch.load(MODEL_PATH, map_location=torch.device('cpu')))
 model.eval()
+
+print("Model loaded successfully!")
 
 
 def prediction(image_path):
