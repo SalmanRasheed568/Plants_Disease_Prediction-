@@ -1,11 +1,13 @@
 import os
 import streamlit as st
+os.environ["STREAMLIT_WATCH_FILE"] = "false"
 import torch
 import numpy as np
 import pandas as pd
 from PIL import Image
 import torchvision.transforms.functional as TF
 import CNN
+import gdown
 
 
 # Get the directory of the currently running script
