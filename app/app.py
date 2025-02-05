@@ -85,6 +85,9 @@ def load_html(file_name):
 # Update the path to the HTML files
 html_files_path = os.path.join(BASE_DIR, 'app', 'templates')
 
+# Print the path for debugging
+st.write(f"HTML files path: {html_files_path}")
+
 # List files in the directory for debugging
 try:
     files = os.listdir(html_files_path)
