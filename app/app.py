@@ -82,33 +82,12 @@ def load_html(file_name):
     with open(file_name, 'r', encoding='utf-8') as f:
         return f.read()
 
-# Update the path to the HTML files
-html_files_path = os.path.join(BASE_DIR, 'app', 'templates')
-
-# Print the path for debugging
-st.write(f"HTML files path: {html_files_path}")
-
-# List files in the directory for debugging
-try:
-    files = os.listdir(html_files_path)
-    st.write("Files in templates directory:", files)
-except Exception as e:
-    st.error(f"Error listing files in directory: {e}")
-
 # Load and display HTML files
-html_files = [
-    'contact us.html',
-    'home.html',
-    'index.html',
-    'market.html',
-    'submit.html'
-]
-
-for html_file in html_files:
-    try:
-        st.markdown(load_html(os.path.join(html_files_path, html_file)), unsafe_allow_html=True)
-    except FileNotFoundError as e:
-        st.error(f"File not found: {e}")
+st.markdown(load_html(os.path.join(BASE_DIR, 'templates/contact us.html')), unsafe_allow_html=True)
+st.markdown(load_html(os.path.join(BASE_DIR, 'templates/home.html')), unsafe_allow_html=True)
+st.markdown(load_html(os.path.join(BASE_DIR, 'templates/index.html')), unsafe_allow_html=True)
+st.markdown(load_html(os.path.join(BASE_DIR, 'templates/market.html')), unsafe_allow_html=True)
+st.markdown(load_html(os.path.join(BASE_DIR, 'templates/submit.html')), unsafe_allow_html=True)
 
 uploaded_file = st.file_uploader("📤 Upload an image of the plant leaf", type=["jpg", "png", "jpeg"])
 
