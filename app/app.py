@@ -82,12 +82,15 @@ def load_html(file_name):
     with open(file_name, 'r', encoding='utf-8') as f:
         return f.read()
 
+# Update the path to the HTML files
+html_files_path = r"C:\Users\Dubai Computers\PycharmProjects\PythonProject4\app\templates"
+
 # Load and display HTML files
-st.markdown(load_html(os.path.join(BASE_DIR, 'MultipleFiles/contact us.html')), unsafe_allow_html=True)
-st.markdown(load_html(os.path.join(BASE_DIR, 'MultipleFiles/home.html')), unsafe_allow_html=True)
-st.markdown(load_html(os.path.join(BASE_DIR, 'MultipleFiles/index.html')), unsafe_allow_html=True)
-st.markdown(load_html(os.path.join(BASE_DIR, 'MultipleFiles/market.html')), unsafe_allow_html=True)
-st.markdown(load_html(os.path.join(BASE_DIR, 'MultipleFiles/submit.html')), unsafe_allow_html=True)
+st.markdown(load_html(os.path.join(html_files_path, 'contact us.html')), unsafe_allow_html=True)
+st.markdown(load_html(os.path.join(html_files_path, 'home.html')), unsafe_allow_html=True)
+st.markdown(load_html(os.path.join(html_files_path, 'index.html')), unsafe_allow_html=True)
+st.markdown(load_html(os.path.join(html_files_path, 'market.html')), unsafe_allow_html=True)
+st.markdown(load_html(os.path.join(html_files_path, 'submit.html')), unsafe_allow_html=True)
 
 uploaded_file = st.file_uploader("📤 Upload an image of the plant leaf", type=["jpg", "png", "jpeg"])
 
