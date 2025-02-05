@@ -85,12 +85,22 @@ def load_html(file_name):
 # Update the path to the HTML files
 html_files_path = r"C:\Users\Dubai Computers\PycharmProjects\PythonProject4\app\templates"
 
+# List files in the directory for debugging
+try:
+    files = os.listdir(html_files_path)
+    st.write("Files in templates directory:", files)
+except Exception as e:
+    st.error(f"Error listing files in directory: {e}")
+
 # Load and display HTML files
-st.markdown(load_html(os.path.join(html_files_path, 'contact us.html')), unsafe_allow_html=True)
-st.markdown(load_html(os.path.join(html_files_path, 'home.html')), unsafe_allow_html=True)
-st.markdown(load_html(os.path.join(html_files_path, 'index.html')), unsafe_allow_html=True)
-st.markdown(load_html(os.path.join(html_files_path, 'market.html')), unsafe_allow_html=True)
-st.markdown(load_html(os.path.join(html_files_path, 'submit.html')), unsafe_allow_html=True)
+try:
+    st.markdown(load_html(os.path.join(html_files_path, 'contact us.html')), unsafe_allow_html=True)
+    st.markdown(load_html(os.path.join(html_files_path, 'home.html')), unsafe_allow_html=True)
+    st.markdown(load_html(os.path.join(html_files_path, 'index.html')), unsafe_allow_html=True)
+    st.markdown(load_html(os.path.join(html_files_path, 'market.html')), unsafe_allow_html=True)
+    st.markdown(load_html(os.path.join(html_files_path, 'submit.html')), unsafe_allow_html=True)
+except FileNotFoundError as e:
+    st.error(f"File not found: {e}")
 
 uploaded_file = st.file_uploader("📤 Upload an image of the plant leaf", type=["jpg", "png", "jpeg"])
 
