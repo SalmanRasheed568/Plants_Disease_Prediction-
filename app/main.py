@@ -63,7 +63,7 @@ def set_background(image_path):
         </style>
     """, unsafe_allow_html=True)
 
-background_image_path = r"C:\Users\Dubai Computers\PycharmProjects\PythonProject4\app\102927372-plant-4k-wallpaper.jpg"
+background_image_path = "app/102927372-plant-4k-wallpaper.jpg"
 
 # Check if file exists
 if os.path.isfile(background_image_path):
