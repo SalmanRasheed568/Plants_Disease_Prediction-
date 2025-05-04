@@ -69,7 +69,7 @@ if os.path.exists(background_image_path):
 else:
     st.error("⚠️ Background image not found! Please check the file path.")
 
-st.title("🌱 Plant Disease Diagnosis and Medicine Recommendations")
+st.title("🌱 Plant Disease Detection App")
 
 uploaded_files = st.file_uploader("📤 Upload leaf images", type=["jpg", "png", "jpeg"], accept_multiple_files=True)
 
