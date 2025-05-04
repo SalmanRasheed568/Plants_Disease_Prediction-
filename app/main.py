@@ -63,11 +63,13 @@ def set_background(image_path):
         </style>
     """, unsafe_allow_html=True)
 
-background_image_path = r"C:\Users\Dubai Computers\PycharmProjects\PythonProject4\app\102927372-plant-4k-wallpaper.jpg"
-if os.path.exists(background_image_path):
+background_image_path = "app/102927372-plant-4k-wallpaper.jpg"
+
+# Check if file exists
+if os.path.isfile(background_image_path):
     set_background(background_image_path)
 else:
-    st.error("⚠️ Background image not found! Please check the file path.")
+    st.error("⚠️ Background image not found! Please check the file path or move the image to the correct location.")
 
 st.title("🌱 Plant Disease Diagnosis and Medicine Recommendations")
 
